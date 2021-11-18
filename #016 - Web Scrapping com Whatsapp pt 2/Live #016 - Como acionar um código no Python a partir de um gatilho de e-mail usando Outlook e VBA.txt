@@ -1,0 +1,5 @@
+Live #016 - Como acionar um código no Python 
+	    a partir de um gatilho de e-mail usando Outlook e VBA
+
+
+Começa as 21h05

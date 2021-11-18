@@ -1,0 +1,83 @@
+EXCEL
+
+Sub Rodar_Python()
+
+    ' pra funcionar precisa habilitar a referencia Windows Script Host Object Model
+
+    ' declarando as variaveis
+
+    Dim objShell As Object
+    Dim caminho_codigo, caminho_python As String
+    Dim esperar_finalizacao As Boolean
+    Dim mostrar_tela As Integer
+    
+    ' setar o objeto para aquilo que vamos utilizar
+
+    Set objShell = VBA.CreateObject("Wscript.Shell")
+    
+    ' indicar os caminhos
+    ' OBS: se o seu caminho tiver espacos, usar aspas tripla
+
+    caminho_codigo = """D:\Programa 1-1\Lives\Live #016 - Web Scrapping com Whatsapp pt 2\webscrapping_whatsapp.py"""
+    caminho_python = """C:\Users\gtufa\AppData\Local\Programs\Python\Python39\python.exe"""
+
+    ' setar parametros da chamada da funcao Run
+
+    esperar_finalizacao = True
+    mostrar_tela = 1
+ 
+    ' efetivamente rodar o codigo
+
+    rodar = objShell.Run(caminho_python & caminho_codigo, mostrar_tela, esperar_finalizacao)
+
+End Sub
+
+
+
+
+
+OUTLOOK
+
+Public Sub auto_Live16(MItem As Outlook.MailItem)
+
+        ' declarando variaveis
+        Dim oAttachment As Outlook.Attachment
+        Dim caminho_completo As String
+        Dim FSO As Object
+        
+        ' definindo o caminho da minha pasta de downloads do anexo
+        caminho = "D:\Programa 1-1\Lives\Live #016 - Web Scrapping com Whatsapp pt 2\Anexos"
+          
+        ' definindo o nome do arquivo
+        nome_arquivo = "msg_wpp"
+        
+        ' definindo o caminho completo
+        caminho_completo = caminho & "\" & nome_arquivo & ".xlsx"
+        
+        ' limpando qlqr arquivo que esteja dentro da pasta
+        Set FSO = CreateObject("scripting.filesystemobject")
+        If FSO.FileExists(caminho_completo) = True Then
+              FSO.deletefile caminho_completo, True
+        End If
+        
+        ' fazendo o download do anexo
+        For Each oAttachment In MItem.Attachments
+               oAttachment.SaveAsFile caminho_completo
+        Next
+        
+        ' rodar o excel que contem a macro que vai chamar o codigo de python
+        Dim appExcel As Excel.Application
+        Dim arquivo_Excel As Workbook
+         
+        ' seto as variaveis corretamente
+        Set appExcel = New Excel.Application
+        Set arquivo_Excel = appExcel.Workbooks.Open("D:\Programa 1-1\Lives\Live #016 - Web Scrapping com Whatsapp pt 2\Auto_Live16.xlsm")
+        appExcel.Visible = False
+        
+        ' faco a chamada da macro
+        arquivo_Excel.Application.Run "RodarPython.Rodar_Python"
+        
+        ' fecho o excel
+        arquivo_Excel.Close SaveChanges:=False
+
+End Sub
